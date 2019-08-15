@@ -166,4 +166,11 @@ public interface IExpressionVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
 	Result VisitStringLiteral([NotNull] ExpressionParser.StringLiteralContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>identifier</c>
+	/// labeled alternative in <see cref="ExpressionParser.literal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitIdentifier([NotNull] ExpressionParser.IdentifierContext context);
 }

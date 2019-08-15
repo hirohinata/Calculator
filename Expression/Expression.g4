@@ -39,9 +39,10 @@ funccallExpr
     : funcname=IDENTIFIER OPEN_PAREN (args+=expr (COMMA args+=expr)*)? CLOSE_PAREN
     ;
 literal
-    : UINT      #uintLiteral
-    | REAL      #realLiteral
-    | STRING    #stringLiteral
+    : UINT          #uintLiteral
+    | REAL          #realLiteral
+    | STRING        #stringLiteral
+    | IDENTIFIER    #identifier
     ;
 
 PLUS: '+';

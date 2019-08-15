@@ -175,3 +175,8 @@ type Visitor() =
         override this.VisitStringLiteral([<NotNull>]context: ExpressionParser.StringLiteralContext) =
             let text = context.STRING().Symbol.Text
             text.Substring(1, text.Length - 2) |> String
+
+        override this.VisitIdentifier([<NotNull>]context: ExpressionParser.IdentifierContext) =
+            match context.IDENTIFIER().Symbol.Text.ToUpper() with
+            | "PI" -> System.Math.PI |> Real
+            | _ -> Error

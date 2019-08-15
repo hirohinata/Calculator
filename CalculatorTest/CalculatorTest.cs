@@ -30,7 +30,7 @@ namespace CalculatorTest
         [TestCase("1+sin(90)", "CalcReal:2")]
         [TestCase("1+sin(180)", "CalcReal:1")]
 
-        //[TestCase("1+PI", "CalcReal:4.141593")]
+        [TestCase("1+PI", "CalcReal:4.14159265358979")]
 
         [TestCase("\"abc\" + \"de f\"", "CalcString:abcde f")]
         [TestCase("\"abc\" * 3", "CalcString:abcabcabc")]
