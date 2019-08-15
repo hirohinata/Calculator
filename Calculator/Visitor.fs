@@ -9,44 +9,44 @@ type Visitor() =
         override this.VisitInput([<NotNull>]context: ExpressionParser.InputContext) =
             context.expr() |> this.Visit
 
-        override this.VisitExpr_additive([<NotNull>]context: ExpressionParser.Expr_additiveContext) =
+        override this.VisitAddExpr([<NotNull>]context: ExpressionParser.AddExprContext) =
             let lhs = context.lhs |> this.Visit
             let rhs = context.rhs |> this.Visit
-
-            let intOp lhs rhs =
-                match context.op.Type with
-                | ExpressionParser.PLUS -> Checked.(+) lhs rhs |> Result.Integer
-                | ExpressionParser.MINUS -> Checked.(-) lhs rhs |> Result.Integer
-                | _ -> invalidOp ""
-            let realOp lhs rhs =
-                match context.op.Type with
-                    | ExpressionParser.PLUS -> Checked.(+) lhs rhs
-                    | ExpressionParser.MINUS -> Checked.(-) lhs rhs
-                    | _ -> invalidOp ""
-                |> Result.Real
-            let strOp lhs rhs =
-                match context.op.Type with
-                | ExpressionParser.PLUS -> (+) lhs rhs |> String
-                | ExpressionParser.MINUS -> Error
-                | _ -> invalidOp ""
+            let realOp lhs rhs = Checked.(+) lhs rhs |> Result.Real
 
             match lhs, rhs with
-            | Integer lhs, Integer rhs -> intOp lhs rhs
+            | Integer lhs, Integer rhs -> Checked.(+) lhs rhs |> Result.Integer
             | Integer lhs, Real rhs -> realOp (double lhs) rhs
             | Integer _, (String _ | Error) -> Error
             | Real lhs, Integer rhs -> realOp lhs (double rhs)
             | Real lhs, Real rhs -> realOp lhs rhs
             | Real _, (String _ | Error) -> Error
-            | String lhs, String rhs -> strOp lhs rhs
+            | String lhs, String rhs -> (+) lhs rhs |> String
             | String _, (Integer _ | Real _ | Error) -> Error
             | Error, (Integer _ | Real _ | String _ | Error) -> Error
 
-        override this.VisitNum_uint([<NotNull>]context: ExpressionParser.Num_uintContext) =
+        override this.VisitSubExpr([<NotNull>]context: ExpressionParser.SubExprContext) =
+            let lhs = context.lhs |> this.Visit
+            let rhs = context.rhs |> this.Visit
+            let realOp lhs rhs = Checked.(-) lhs rhs |> Result.Real
+
+            match lhs, rhs with
+            | Integer lhs, Integer rhs -> Checked.(-) lhs rhs |> Result.Integer
+            | Integer lhs, Real rhs -> realOp (double lhs) rhs
+            | Integer _, (String _ | Error) -> Error
+            | Real lhs, Integer rhs -> realOp lhs (double rhs)
+            | Real lhs, Real rhs -> realOp lhs rhs
+            | Real _, (String _ | Error) -> Error
+            | String lhs, String rhs -> invalidOp "CantMinusString"
+            | String _, (Integer _ | Real _ | Error) -> Error
+            | Error, (Integer _ | Real _ | String _ | Error) -> Error
+
+        override this.VisitUintLiteral([<NotNull>]context: ExpressionParser.UintLiteralContext) =
             context.UINT().Symbol.Text |> System.Int32.Parse |> Integer
 
-        override this.VisitNum_real([<NotNull>]context: ExpressionParser.Num_realContext) =
+        override this.VisitRealLiteral([<NotNull>]context: ExpressionParser.RealLiteralContext) =
             context.REAL().Symbol.Text |> System.Double.Parse |> Real
 
-        override this.VisitNum_string([<NotNull>]context: ExpressionParser.Num_stringContext) =
+        override this.VisitStringLiteral([<NotNull>]context: ExpressionParser.StringLiteralContext) =
             let text = context.STRING().Symbol.Text
             text.Substring(1, text.Length - 2) |> String

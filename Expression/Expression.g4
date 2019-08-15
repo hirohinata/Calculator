@@ -1,23 +1,47 @@
 grammar Expression;
 
-input: expr EOF;    //Pythonで出力する人は、"input"という名前は使えないので変更すること
-
-expr
-    : num                                       #expr_none
-    | paren_expr                                #expr_none
-    | op=(PLUS|MINUS) expr                      #expr_unary
-    | <assoc=right> lhs=expr HAT rhs=expr       #expr_power
-    | lhs=expr op=(ASTERISK | SLASH) rhs=expr   #expr_multipricative
-    | expr paren_expr                           #expr_multipricative
-    | lhs=expr op=(PLUS|MINUS) rhs=expr         #expr_additive
-    | funcname=IDENTIFIER OPEN_PAREN (args+=expr (COMMA args+=expr)*)? CLOSE_PAREN #expr_funccall   //+=を使うと、同じ種類の構文要素リスト化できる
+input
+    : expr EOF
     ;
 
-paren_expr: OPEN_PAREN expr CLOSE_PAREN;
-num
-    : UINT      #num_uint
-    | REAL      #num_real
-    | STRING    #num_string
+expr
+    : additiveExpr
+    ;
+additiveExpr
+    : multipricativeExpr                                #noneAdditiveExpr
+    | lhs=additiveExpr PLUS rhs=multipricativeExpr      #addExpr
+    | lhs=additiveExpr MINUS rhs=multipricativeExpr     #subExpr
+    ;
+multipricativeExpr
+    : powerExpr                                         #noneMultipricativeExpr
+    | lhs=multipricativeExpr ASTERISK rhs=powerExpr     #multiExpr
+    | lhs=multipricativeExpr SLASH rhs=powerExpr        #divExpr
+    | lhs=multipricativeExpr rhs=parenExpr              #parenMultiExpr
+    ;
+powerExpr
+    : unaryExpr                                         #nonePowerExpr
+    | lhs=unaryExpr HAT rhs=powerExpr                   #powExpr
+    ;
+unaryExpr
+    : primaryExpr                                       #noneUnaryExpr
+    | PLUS rhs=unaryExpr                                #plusExpr
+    | MINUS rhs=unaryExpr                               #minusExpr
+    ;
+primaryExpr
+    : parenExpr
+    | funccallExpr
+    | literal
+    ;
+parenExpr
+    : OPEN_PAREN expr CLOSE_PAREN
+    ;
+funccallExpr
+    : funcname=IDENTIFIER OPEN_PAREN (args+=expr (COMMA args+=expr)*)? CLOSE_PAREN
+    ;
+literal
+    : UINT      #uintLiteral
+    | REAL      #realLiteral
+    | STRING    #stringLiteral
     ;
 
 PLUS: '+';

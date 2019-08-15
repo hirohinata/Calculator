@@ -38,72 +38,132 @@ public interface IExpressionVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitInput([NotNull] ExpressionParser.InputContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>expr_additive</c>
-	/// labeled alternative in <see cref="ExpressionParser.expr"/>.
+	/// Visit a parse tree produced by <see cref="ExpressionParser.expr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitExpr_additive([NotNull] ExpressionParser.Expr_additiveContext context);
+	Result VisitExpr([NotNull] ExpressionParser.ExprContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>expr_power</c>
-	/// labeled alternative in <see cref="ExpressionParser.expr"/>.
+	/// Visit a parse tree produced by the <c>addExpr</c>
+	/// labeled alternative in <see cref="ExpressionParser.additiveExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitExpr_power([NotNull] ExpressionParser.Expr_powerContext context);
+	Result VisitAddExpr([NotNull] ExpressionParser.AddExprContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>expr_funccall</c>
-	/// labeled alternative in <see cref="ExpressionParser.expr"/>.
+	/// Visit a parse tree produced by the <c>subExpr</c>
+	/// labeled alternative in <see cref="ExpressionParser.additiveExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitExpr_funccall([NotNull] ExpressionParser.Expr_funccallContext context);
+	Result VisitSubExpr([NotNull] ExpressionParser.SubExprContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>expr_multipricative</c>
-	/// labeled alternative in <see cref="ExpressionParser.expr"/>.
+	/// Visit a parse tree produced by the <c>noneAdditiveExpr</c>
+	/// labeled alternative in <see cref="ExpressionParser.additiveExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitExpr_multipricative([NotNull] ExpressionParser.Expr_multipricativeContext context);
+	Result VisitNoneAdditiveExpr([NotNull] ExpressionParser.NoneAdditiveExprContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>expr_unary</c>
-	/// labeled alternative in <see cref="ExpressionParser.expr"/>.
+	/// Visit a parse tree produced by the <c>noneMultipricativeExpr</c>
+	/// labeled alternative in <see cref="ExpressionParser.multipricativeExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitExpr_unary([NotNull] ExpressionParser.Expr_unaryContext context);
+	Result VisitNoneMultipricativeExpr([NotNull] ExpressionParser.NoneMultipricativeExprContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>expr_none</c>
-	/// labeled alternative in <see cref="ExpressionParser.expr"/>.
+	/// Visit a parse tree produced by the <c>multiExpr</c>
+	/// labeled alternative in <see cref="ExpressionParser.multipricativeExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitExpr_none([NotNull] ExpressionParser.Expr_noneContext context);
+	Result VisitMultiExpr([NotNull] ExpressionParser.MultiExprContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ExpressionParser.paren_expr"/>.
+	/// Visit a parse tree produced by the <c>parenMultiExpr</c>
+	/// labeled alternative in <see cref="ExpressionParser.multipricativeExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitParen_expr([NotNull] ExpressionParser.Paren_exprContext context);
+	Result VisitParenMultiExpr([NotNull] ExpressionParser.ParenMultiExprContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>num_uint</c>
-	/// labeled alternative in <see cref="ExpressionParser.num"/>.
+	/// Visit a parse tree produced by the <c>divExpr</c>
+	/// labeled alternative in <see cref="ExpressionParser.multipricativeExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitNum_uint([NotNull] ExpressionParser.Num_uintContext context);
+	Result VisitDivExpr([NotNull] ExpressionParser.DivExprContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>num_real</c>
-	/// labeled alternative in <see cref="ExpressionParser.num"/>.
+	/// Visit a parse tree produced by the <c>nonePowerExpr</c>
+	/// labeled alternative in <see cref="ExpressionParser.powerExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitNum_real([NotNull] ExpressionParser.Num_realContext context);
+	Result VisitNonePowerExpr([NotNull] ExpressionParser.NonePowerExprContext context);
 	/// <summary>
-	/// Visit a parse tree produced by the <c>num_string</c>
-	/// labeled alternative in <see cref="ExpressionParser.num"/>.
+	/// Visit a parse tree produced by the <c>powExpr</c>
+	/// labeled alternative in <see cref="ExpressionParser.powerExpr"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitNum_string([NotNull] ExpressionParser.Num_stringContext context);
+	Result VisitPowExpr([NotNull] ExpressionParser.PowExprContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>noneUnaryExpr</c>
+	/// labeled alternative in <see cref="ExpressionParser.unaryExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNoneUnaryExpr([NotNull] ExpressionParser.NoneUnaryExprContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>plusExpr</c>
+	/// labeled alternative in <see cref="ExpressionParser.unaryExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPlusExpr([NotNull] ExpressionParser.PlusExprContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>minusExpr</c>
+	/// labeled alternative in <see cref="ExpressionParser.unaryExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitMinusExpr([NotNull] ExpressionParser.MinusExprContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExpressionParser.primaryExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitPrimaryExpr([NotNull] ExpressionParser.PrimaryExprContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExpressionParser.parenExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitParenExpr([NotNull] ExpressionParser.ParenExprContext context);
+	/// <summary>
+	/// Visit a parse tree produced by <see cref="ExpressionParser.funccallExpr"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitFunccallExpr([NotNull] ExpressionParser.FunccallExprContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>uintLiteral</c>
+	/// labeled alternative in <see cref="ExpressionParser.literal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitUintLiteral([NotNull] ExpressionParser.UintLiteralContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>realLiteral</c>
+	/// labeled alternative in <see cref="ExpressionParser.literal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitRealLiteral([NotNull] ExpressionParser.RealLiteralContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>stringLiteral</c>
+	/// labeled alternative in <see cref="ExpressionParser.literal"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitStringLiteral([NotNull] ExpressionParser.StringLiteralContext context);
 }

@@ -17,4 +17,5 @@ module public Calculator =
             | Result.Error -> "Err"
         with
         | :? System.OverflowException -> "Err.OverFlow"
+        | :? System.InvalidOperationException as e -> "Err." + e.Message
         | _ -> "Err.UnknownException"

@@ -40,7 +40,7 @@ namespace CalculatorTest
         //[TestCase("5+\"abc\"", "Err.UnSupportCalcRule")]
         //[TestCase("\"abc\"-1.2", "Err.UnSupportCalcRule")]
         //[TestCase("\"abcde\"- \"bcd\"  ", "CalcString:ae")]
-        //[TestCase("\"abcde\"- \"efg\"", "Err.CantMinusString")]
+        [TestCase("\"abcde\"- \"efg\"", "Err.CantMinusString")]
         public void Test(string input, string expected)
         {
             Assert.AreEqual(expected, Calculator.Calculator.Execute(input));
