@@ -1,5 +1,5 @@
 ﻿namespace Calculator
 
 type Visitor() =
-    inherit ExpressionBaseVisitor<unit>()
-    
+    inherit ExpressionBaseVisitor<Result>()
+        override this.DefaultResult = Result.Error
