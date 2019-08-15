@@ -101,6 +101,27 @@ type Visitor() =
             | Error, (Integer _ | Real _ | String _ | Error)
                 -> Error
 
+        override this.VisitPowExpr([<NotNull>]context: ExpressionParser.PowExprContext) =
+            let realOp lhs rhs = lhs ** rhs |> Result.Real
+
+            match context.lhs |> this.Visit, context.rhs |> this.Visit with
+            | Integer lhs, Integer rhs
+                ->
+                let result = (double lhs) ** (double rhs)
+                if (double System.Int32.MaxValue) < result then raise(new System.OverflowException())
+                result |> int32 |> Result.Integer
+            | Integer lhs, Real rhs
+                -> realOp (double lhs) rhs
+            | Real lhs, Integer rhs
+                -> realOp lhs (double rhs)
+            | Real lhs, Real rhs
+                -> realOp lhs rhs
+            | Integer _, (String _ | Error)
+            | Real _, (String _ | Error)
+            | String _, (Integer _ | Real _ | String _ | Error)
+            | Error, (Integer _ | Real _ | String _ | Error)
+                -> Error
+
         override this.VisitPlusExpr([<NotNull>]context: ExpressionParser.PlusExprContext) =
             match context.rhs |> this.Visit with
             | Integer value -> value |> Integer

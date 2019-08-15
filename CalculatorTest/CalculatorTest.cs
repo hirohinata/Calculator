@@ -43,6 +43,7 @@ namespace CalculatorTest
         [TestCase("\"abcde\"- \"efg\"", "Err.CantMinusString")]
 
         [TestCase("\"漢字\" ( 2 + 1 )", "CalcString:漢字漢字漢字")]
+        [TestCase("2 ^ 10", "CalcInt:1024")]
         public void Test(string input, string expected)
         {
             Assert.AreEqual(expected, Calculator.Calculator.Execute(input));
