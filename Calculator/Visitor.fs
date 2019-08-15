@@ -15,14 +15,13 @@ type Visitor() =
 
             let intOp lhs rhs =
                 match context.op.Type with
-                    | ExpressionParser.PLUS -> (+) lhs rhs
-                    | ExpressionParser.MINUS -> (-) lhs rhs
-                    | _ -> invalidOp ""
-                |> Result.Integer
+                | ExpressionParser.PLUS -> Checked.(+) lhs rhs |> Result.Integer
+                | ExpressionParser.MINUS -> Checked.(-) lhs rhs |> Result.Integer
+                | _ -> invalidOp ""
             let realOp lhs rhs =
                 match context.op.Type with
-                    | ExpressionParser.PLUS -> (+) lhs rhs
-                    | ExpressionParser.MINUS -> (-) lhs rhs
+                    | ExpressionParser.PLUS -> Checked.(+) lhs rhs
+                    | ExpressionParser.MINUS -> Checked.(-) lhs rhs
                     | _ -> invalidOp ""
                 |> Result.Real
             let strOp lhs rhs =
@@ -43,7 +42,7 @@ type Visitor() =
             | Error, (Integer _ | Real _ | String _ | Error) -> Error
 
         override this.VisitNum_uint([<NotNull>]context: ExpressionParser.Num_uintContext) =
-            context.UINT().Symbol.Text |> System.Int64.Parse |> Integer
+            context.UINT().Symbol.Text |> System.Int32.Parse |> Integer
 
         override this.VisitNum_real([<NotNull>]context: ExpressionParser.Num_realContext) =
             context.REAL().Symbol.Text |> System.Double.Parse |> Real

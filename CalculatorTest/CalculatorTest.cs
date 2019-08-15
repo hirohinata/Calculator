@@ -11,7 +11,7 @@ namespace CalculatorTest
         [TestCase("1 + .7", "CalcReal:1.7")]
         [TestCase("1 + 3.", "CalcReal:4")]
         [TestCase("1.123+1.0", "CalcReal:2.123")]
-        //[TestCase("2147483647+1", "Err.OverFlow")]
+        [TestCase("2147483647+1", "Err.OverFlow")]
 
         [TestCase("1-21", "CalcInt:-20")]
         [TestCase("1.0 - 1", "CalcReal:0")]
