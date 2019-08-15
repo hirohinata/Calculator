@@ -41,6 +41,20 @@ type Visitor() =
             | String _, (Integer _ | Real _ | Error) -> Error
             | Error, (Integer _ | Real _ | String _ | Error) -> Error
 
+        override this.VisitPlusExpr([<NotNull>]context: ExpressionParser.PlusExprContext) =
+            match context.rhs |> this.Visit with
+            | Integer value -> value |> Integer
+            | Real value -> value |> Real
+            | String _ -> invalidOp "CantUnaryPlusString"
+            | Error -> Error
+
+        override this.VisitMinusExpr([<NotNull>]context: ExpressionParser.MinusExprContext) =
+            match context.rhs |> this.Visit with
+            | Integer value -> -value |> Integer
+            | Real value -> -value |> Real
+            | String _ -> invalidOp "CantUnaryMinusString"
+            | Error -> Error
+
         override this.VisitUintLiteral([<NotNull>]context: ExpressionParser.UintLiteralContext) =
             context.UINT().Symbol.Text |> System.Int32.Parse |> Integer
 
