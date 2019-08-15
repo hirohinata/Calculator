@@ -139,6 +139,33 @@ type Visitor() =
         override this.VisitParenExpr([<NotNull>]context: ExpressionParser.ParenExprContext) =
             context.expr() |> this.Visit
 
+        override this.VisitFunccallExpr([<NotNull>]context: ExpressionParser.FunccallExprContext) =
+            let toRadian degree = degree * System.Math.PI / 180.0
+
+            let args = context._args |> Seq.map this.Visit |> Seq.toList
+            match context.funcname.Text.ToUpper() with
+            | "SIN"
+                -> match args.Length, List.tryHead args with
+                   | 1, Some (Integer value) -> value |> double|> toRadian |> System.Math.Sin |> Real
+                   | 1, Some (Real value) -> value |> toRadian |> System.Math.Sin |> Real
+                   | _, _ -> Error
+            | "COS"
+                -> match args.Length, List.tryHead args with
+                   | 1, Some (Integer value) -> value |> double |> toRadian |> System.Math.Cos |> Real
+                   | 1, Some (Real value) -> value |> toRadian |> System.Math.Cos |> Real
+                   | _, _ -> Error
+            | "TAN"
+                -> match args.Length, List.tryHead args with
+                   | 1, Some (Integer value) -> value |> double |> toRadian |> System.Math.Tan |> Real
+                   | 1, Some (Real value) -> value |> toRadian |> System.Math.Tan |> Real
+                   | _, _ -> Error
+            | "LEN"
+                -> match args.Length, List.tryHead args with
+                   | 1, Some (String text) -> text.Length |> Integer
+                   | _, _ -> Error
+            | _
+                -> Error
+
         override this.VisitUintLiteral([<NotNull>]context: ExpressionParser.UintLiteralContext) =
             context.UINT().Symbol.Text |> System.Int32.Parse |> Integer
 

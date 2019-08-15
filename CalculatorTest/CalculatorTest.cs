@@ -27,15 +27,15 @@ namespace CalculatorTest
         [TestCase("11/2", "CalcReal:5.5")]
         [TestCase("10/0", "Err.ZeroDiv")]
 
-        //[TestCase("1+sin(90)", "CalcReal:2")]
-        //[TestCase("1+sin(180)", "CalcReal:1")]
+        [TestCase("1+sin(90)", "CalcReal:2")]
+        [TestCase("1+sin(180)", "CalcReal:1")]
 
         //[TestCase("1+PI", "CalcReal:4.141593")]
 
         [TestCase("\"abc\" + \"de f\"", "CalcString:abcde f")]
         [TestCase("\"abc\" * 3", "CalcString:abcabcabc")]
         [TestCase("4*\"abc\"", "CalcString:abcabcabcabc")]
-        //[TestCase("5 + LEN(\"abc\")", "CalcInt:8")]
+        [TestCase("5 + LEN(\"abc\")", "CalcInt:8")]
 
         //[TestCase("5+\"abc\"", "Err.UnSupportCalcRule")]
         //[TestCase("\"abc\"-1.2", "Err.UnSupportCalcRule")]
