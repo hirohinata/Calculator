@@ -13,29 +13,41 @@ type Visitor() =
             let realOp lhs rhs = Checked.(+) lhs rhs |> Result.Real
 
             match context.lhs |> this.Visit, context.rhs |> this.Visit with
-            | Integer lhs, Integer rhs -> Checked.(+) lhs rhs |> Result.Integer
-            | Integer lhs, Real rhs -> realOp (double lhs) rhs
-            | Integer _, (String _ | Error) -> Error
-            | Real lhs, Integer rhs -> realOp lhs (double rhs)
-            | Real lhs, Real rhs -> realOp lhs rhs
-            | Real _, (String _ | Error) -> Error
-            | String lhs, String rhs -> (+) lhs rhs |> String
-            | String _, (Integer _ | Real _ | Error) -> Error
-            | Error, (Integer _ | Real _ | String _ | Error) -> Error
+            | Integer lhs, Integer rhs
+                -> Checked.(+) lhs rhs |> Result.Integer
+            | Integer lhs, Real rhs
+                -> realOp (double lhs) rhs
+            | Real lhs, Integer rhs
+                -> realOp lhs (double rhs)
+            | Real lhs, Real rhs
+                -> realOp lhs rhs
+            | String lhs, String rhs
+                -> lhs + rhs |> String
+            | Integer _, (String _ | Error)
+            | Real _, (String _ | Error)
+            | String _, (Integer _ | Real _ | Error)
+            | Error, (Integer _ | Real _ | String _ | Error)
+                -> Error
 
         override this.VisitSubExpr([<NotNull>]context: ExpressionParser.SubExprContext) =
             let realOp lhs rhs = Checked.(-) lhs rhs |> Result.Real
 
             match context.lhs |> this.Visit, context.rhs |> this.Visit with
-            | Integer lhs, Integer rhs -> Checked.(-) lhs rhs |> Result.Integer
-            | Integer lhs, Real rhs -> realOp (double lhs) rhs
-            | Integer _, (String _ | Error) -> Error
-            | Real lhs, Integer rhs -> realOp lhs (double rhs)
-            | Real lhs, Real rhs -> realOp lhs rhs
-            | Real _, (String _ | Error) -> Error
-            | String lhs, String rhs -> invalidOp "CantMinusString"
-            | String _, (Integer _ | Real _ | Error) -> Error
-            | Error, (Integer _ | Real _ | String _ | Error) -> Error
+            | Integer lhs, Integer rhs
+                -> Checked.(-) lhs rhs |> Result.Integer
+            | Integer lhs, Real rhs
+                -> realOp (double lhs) rhs
+            | Real lhs, Integer rhs
+                -> realOp lhs (double rhs)
+            | Real lhs, Real rhs
+                -> realOp lhs rhs
+            | String lhs, String rhs
+                -> invalidOp "CantMinusString"
+            | Integer _, (String _ | Error)
+            | Real _, (String _ | Error)
+            | String _, (Integer _ | Real _ | Error)
+            | Error, (Integer _ | Real _ | String _ | Error)
+                -> Error
 
         override this.VisitMultiExpr([<NotNull>]context: ExpressionParser.MultiExprContext) =
             let realOp lhs rhs = Checked.( * ) lhs rhs |> Result.Real
