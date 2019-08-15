@@ -42,5 +42,12 @@ type Visitor() =
             | String _, (Integer _ | Real _ | Error) -> Error
             | Error, (Integer _ | Real _ | String _ | Error) -> Error
 
-        override this.VisitNum([<NotNull>]context: ExpressionParser.NumContext) =
+        override this.VisitNum_uint([<NotNull>]context: ExpressionParser.Num_uintContext) =
             context.UINT().Symbol.Text |> System.Int64.Parse |> Integer
+
+        override this.VisitNum_real([<NotNull>]context: ExpressionParser.Num_realContext) =
+            context.REAL().Symbol.Text |> System.Double.Parse |> Real
+
+        override this.VisitNum_string([<NotNull>]context: ExpressionParser.Num_stringContext) =
+            let text = context.STRING().Symbol.Text
+            text.Substring(1, text.Length - 2) |> String

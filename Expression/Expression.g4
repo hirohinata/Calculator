@@ -15,7 +15,9 @@ expr
 
 paren_expr: OPEN_PAREN expr CLOSE_PAREN;
 num
-    : UINT
+    : UINT      #num_uint
+    | REAL      #num_real
+    | STRING    #num_string
     ;
 
 PLUS: '+';
@@ -26,8 +28,11 @@ HAT: '^';
 OPEN_PAREN: '(';
 CLOSE_PAREN: ')';
 COMMA: ',';
+DOT: '.';
 
 UINT: [0-9]+;
+REAL: UINT DOT UINT? | DOT UINT;
+STRING: '"' (~[^"] | '""')* '"';
 
 fragment ID_START: [A-Za-z_];
 fragment ID_CONTINUE: ID_START | [0-9];

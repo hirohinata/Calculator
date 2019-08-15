@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from /Users/azuri_hirohinata/Desktop/ANTLR/calc/Expression.g4 by ANTLR 4.7.2
+// Generated from /Users/azuri_hirohinata/Desktop/ANTLR/Calculator/Expression/Expression.g4 by ANTLR 4.7.2
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -120,7 +120,8 @@ public partial class ExpressionBaseVisitor<Result> : AbstractParseTreeVisitor<Re
 	/// <return>The visitor result.</return>
 	public virtual Result VisitParen_expr([NotNull] ExpressionParser.Paren_exprContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ExpressionParser.num"/>.
+	/// Visit a parse tree produced by the <c>num_uint</c>
+	/// labeled alternative in <see cref="ExpressionParser.num"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -128,5 +129,27 @@ public partial class ExpressionBaseVisitor<Result> : AbstractParseTreeVisitor<Re
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitNum([NotNull] ExpressionParser.NumContext context) { return VisitChildren(context); }
+	public virtual Result VisitNum_uint([NotNull] ExpressionParser.Num_uintContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>num_real</c>
+	/// labeled alternative in <see cref="ExpressionParser.num"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitNum_real([NotNull] ExpressionParser.Num_realContext context) { return VisitChildren(context); }
+	/// <summary>
+	/// Visit a parse tree produced by the <c>num_string</c>
+	/// labeled alternative in <see cref="ExpressionParser.num"/>.
+	/// <para>
+	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
+	/// on <paramref name="context"/>.
+	/// </para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	public virtual Result VisitNum_string([NotNull] ExpressionParser.Num_stringContext context) { return VisitChildren(context); }
 }

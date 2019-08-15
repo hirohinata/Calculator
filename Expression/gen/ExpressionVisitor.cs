@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from /Users/azuri_hirohinata/Desktop/ANTLR/calc/Expression.g4 by ANTLR 4.7.2
+// Generated from /Users/azuri_hirohinata/Desktop/ANTLR/Calculator/Expression/Expression.g4 by ANTLR 4.7.2
 
 // Unreachable code detected
 #pragma warning disable 0162
@@ -86,9 +86,24 @@ public interface IExpressionVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitParen_expr([NotNull] ExpressionParser.Paren_exprContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="ExpressionParser.num"/>.
+	/// Visit a parse tree produced by the <c>num_uint</c>
+	/// labeled alternative in <see cref="ExpressionParser.num"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitNum([NotNull] ExpressionParser.NumContext context);
+	Result VisitNum_uint([NotNull] ExpressionParser.Num_uintContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>num_real</c>
+	/// labeled alternative in <see cref="ExpressionParser.num"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNum_real([NotNull] ExpressionParser.Num_realContext context);
+	/// <summary>
+	/// Visit a parse tree produced by the <c>num_string</c>
+	/// labeled alternative in <see cref="ExpressionParser.num"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitNum_string([NotNull] ExpressionParser.Num_stringContext context);
 }
