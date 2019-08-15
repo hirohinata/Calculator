@@ -1,4 +1,5 @@
 ﻿open Antlr4.Runtime
+open Calculator
 
 [<EntryPoint>]
 let main argv =
@@ -6,6 +7,6 @@ let main argv =
     let stream = new AntlrInputStream(expression)
     let lexer = new ExpressionLexer(stream)
     let parser = new ExpressionParser(new CommonTokenStream(lexer))
-    let visitor = new ExpressionBaseVisitor<unit>()
+    let visitor = new Visitor()
     let result = visitor.Visit(parser.input())
     0
