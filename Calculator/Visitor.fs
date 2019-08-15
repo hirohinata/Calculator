@@ -70,6 +70,27 @@ type Visitor() =
             | Error, (Integer _ | Real _ | String _ | Error)
                 -> Error
 
+        override this.VisitDivExpr([<NotNull>]context: ExpressionParser.DivExprContext) =
+            let realOp lhs rhs = lhs / rhs |> Result.Real
+
+            match context.lhs |> this.Visit, context.rhs |> this.Visit with
+            | Integer lhs, Integer rhs
+                ->
+                if rhs = 0 then invalidOp "ZeroDiv"
+                elif lhs % rhs = 0 then lhs / rhs |> Result.Integer
+                else realOp (double lhs) (double rhs)
+            | Integer lhs, Real rhs
+                -> realOp (double lhs) rhs
+            | Real lhs, Integer rhs
+                -> realOp lhs (double rhs)
+            | Real lhs, Real rhs
+                -> realOp lhs rhs
+            | Integer _, (String _ | Error)
+            | Real _, (String _ | Error)
+            | String _, (Integer _ | Real _ | String _ | Error)
+            | Error, (Integer _ | Real _ | String _ | Error)
+                -> Error
+
         override this.VisitPlusExpr([<NotNull>]context: ExpressionParser.PlusExprContext) =
             match context.rhs |> this.Visit with
             | Integer value -> value |> Integer

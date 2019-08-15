@@ -23,9 +23,9 @@ namespace CalculatorTest
         [TestCase("2147483647*3", "Err.OverFlow")]
         [TestCase("2147483647*1", "CalcInt:2147483647")]
 
-        //[TestCase("10/2", "CalcInt:5")]
-        //[TestCase("11/2", "CalcReal:5.5")]
-        //[TestCase("10/0", "Err.ZeroDiv")]
+        [TestCase("10/2", "CalcInt:5")]
+        [TestCase("11/2", "CalcReal:5.5")]
+        [TestCase("10/0", "Err.ZeroDiv")]
 
         //[TestCase("1+sin(90)", "CalcReal:2")]
         //[TestCase("1+sin(180)", "CalcReal:1")]
