@@ -10,11 +10,9 @@ type Visitor() =
             context.expr() |> this.Visit
 
         override this.VisitAddExpr([<NotNull>]context: ExpressionParser.AddExprContext) =
-            let lhs = context.lhs |> this.Visit
-            let rhs = context.rhs |> this.Visit
             let realOp lhs rhs = Checked.(+) lhs rhs |> Result.Real
 
-            match lhs, rhs with
+            match context.lhs |> this.Visit, context.rhs |> this.Visit with
             | Integer lhs, Integer rhs -> Checked.(+) lhs rhs |> Result.Integer
             | Integer lhs, Real rhs -> realOp (double lhs) rhs
             | Integer _, (String _ | Error) -> Error
@@ -26,11 +24,9 @@ type Visitor() =
             | Error, (Integer _ | Real _ | String _ | Error) -> Error
 
         override this.VisitSubExpr([<NotNull>]context: ExpressionParser.SubExprContext) =
-            let lhs = context.lhs |> this.Visit
-            let rhs = context.rhs |> this.Visit
             let realOp lhs rhs = Checked.(-) lhs rhs |> Result.Real
 
-            match lhs, rhs with
+            match context.lhs |> this.Visit, context.rhs |> this.Visit with
             | Integer lhs, Integer rhs -> Checked.(-) lhs rhs |> Result.Integer
             | Integer lhs, Real rhs -> realOp (double lhs) rhs
             | Integer _, (String _ | Error) -> Error
