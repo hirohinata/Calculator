@@ -18,10 +18,10 @@ namespace CalculatorTest
         [TestCase("1.0 - 1.123", "CalcReal:-0.123")]
         [TestCase("-2147483647-2", "Err.OverFlow")]
 
-        //[TestCase("11*1", "CalcInt:11")]
-        //[TestCase("11*0.1", "CalcReal:1.1")]
-        //[TestCase("2147483647*3", "Err.OverFlow")]
-        //[TestCase("2147483647*1", "CalcInt:2147483647")]
+        [TestCase("11*1", "CalcInt:11")]
+        [TestCase("11*0.1", "CalcReal:1.1")]
+        [TestCase("2147483647*3", "Err.OverFlow")]
+        [TestCase("2147483647*1", "CalcInt:2147483647")]
 
         //[TestCase("10/2", "CalcInt:5")]
         //[TestCase("11/2", "CalcReal:5.5")]
@@ -33,8 +33,8 @@ namespace CalculatorTest
         //[TestCase("1+PI", "CalcReal:4.141593")]
 
         [TestCase("\"abc\" + \"de f\"", "CalcString:abcde f")]
-        //[TestCase("\"abc\" * 3", "CalcString:abcabcabc")]
-        //[TestCase("4*\"abc\"", "CalcString:abcabcabcabc")]
+        [TestCase("\"abc\" * 3", "CalcString:abcabcabc")]
+        [TestCase("4*\"abc\"", "CalcString:abcabcabcabc")]
         //[TestCase("5 + LEN(\"abc\")", "CalcInt:8")]
 
         //[TestCase("5+\"abc\"", "Err.UnSupportCalcRule")]
