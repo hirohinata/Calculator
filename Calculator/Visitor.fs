@@ -49,10 +49,10 @@ type Visitor() =
             | Error, (Integer _ | Real _ | String _ | Error)
                 -> Error
 
-        override this.VisitMultiExpr([<NotNull>]context: ExpressionParser.MultiExprContext) =
+        member private this.MultiExpr lhs rhs =
             let realOp lhs rhs = Checked.( * ) lhs rhs |> Result.Real
 
-            match context.lhs |> this.Visit, context.rhs |> this.Visit with
+            match lhs, rhs with
             | Integer lhs, Integer rhs
                 -> Checked.( * ) lhs rhs |> Result.Integer
             | Integer lhs, Real rhs
@@ -69,6 +69,16 @@ type Visitor() =
             | String _, (Real _ | String _ | Error)
             | Error, (Integer _ | Real _ | String _ | Error)
                 -> Error
+
+        override this.VisitMultiExpr([<NotNull>]context: ExpressionParser.MultiExprContext) =
+            this.MultiExpr
+                (context.lhs |> this.Visit)
+                (context.rhs |> this.Visit)
+                
+        override this.VisitParenMultiExpr([<NotNull>]context: ExpressionParser.ParenMultiExprContext) =
+            this.MultiExpr
+                (context.lhs |> this.Visit)
+                (context.rhs |> this.Visit)
 
         override this.VisitDivExpr([<NotNull>]context: ExpressionParser.DivExprContext) =
             let realOp lhs rhs = lhs / rhs |> Result.Real
@@ -104,6 +114,9 @@ type Visitor() =
             | Real value -> -value |> Real
             | String _ -> invalidOp "CantUnaryMinusString"
             | Error -> Error
+
+        override this.VisitParenExpr([<NotNull>]context: ExpressionParser.ParenExprContext) =
+            context.expr() |> this.Visit
 
         override this.VisitUintLiteral([<NotNull>]context: ExpressionParser.UintLiteralContext) =
             context.UINT().Symbol.Text |> System.Int32.Parse |> Integer

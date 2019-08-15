@@ -41,6 +41,8 @@ namespace CalculatorTest
         //[TestCase("\"abc\"-1.2", "Err.UnSupportCalcRule")]
         //[TestCase("\"abcde\"- \"bcd\"  ", "CalcString:ae")]
         [TestCase("\"abcde\"- \"efg\"", "Err.CantMinusString")]
+
+        [TestCase("\"漢字\" ( 2 + 1 )", "CalcString:漢字漢字漢字")]
         public void Test(string input, string expected)
         {
             Assert.AreEqual(expected, Calculator.Calculator.Execute(input));
