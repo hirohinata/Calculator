@@ -37,8 +37,8 @@ namespace CalculatorTest
         [TestCase("4*\"abc\"", "CalcString:abcabcabcabc")]
         [TestCase("5 + LEN(\"abc\")", "CalcInt:8")]
 
-        //[TestCase("5+\"abc\"", "Err.UnSupportCalcRule")]
-        //[TestCase("\"abc\"-1.2", "Err.UnSupportCalcRule")]
+        [TestCase("5+\"abc\"", "Err.UnSupportCalcRule")]
+        [TestCase("\"abc\"-1.2", "Err.UnSupportCalcRule")]
         //[TestCase("\"abcde\"- \"bcd\"  ", "CalcString:ae")]
         [TestCase("\"abcde\"- \"efg\"", "Err.CantMinusString")]
 

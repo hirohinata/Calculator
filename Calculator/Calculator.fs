@@ -14,8 +14,11 @@ module public Calculator =
             | Result.Integer value -> "CalcInt:" + value.ToString()
             | Result.Real value -> "CalcReal:" + value.ToString()
             | Result.String text -> "CalcString:" + text
-            | Result.Error -> "Err"
+            | Result.Error err ->
+                match err with
+                | UnSupportCalcRule -> "Err.UnSupportCalcRule"
+                | ZeroDiv -> "Err.ZeroDiv"
+                | OverFlow -> "Err.OverFlow"
+                | CantMinusString -> "Err.CantMinusString"
         with
-        | :? System.OverflowException -> "Err.OverFlow"
-        | :? System.InvalidOperationException as e -> "Err." + e.Message
-        | _ -> "Err.UnknownException"
+        | e -> "Err.Exception ( " + e.Message + " )"

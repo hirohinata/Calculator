@@ -4,7 +4,7 @@ open Antlr4.Runtime.Misc
 
 type Visitor() =
     inherit ExpressionBaseVisitor<Result>()
-        override this.DefaultResult = Result.Error
+        override this.DefaultResult = UnSupportCalcRule |> Error
 
         override this.VisitInput([<NotNull>]context: ExpressionParser.InputContext) =
             context.expr() |> this.Visit
@@ -12,63 +12,75 @@ type Visitor() =
         override this.VisitAddExpr([<NotNull>]context: ExpressionParser.AddExprContext) =
             let realOp lhs rhs = Checked.(+) lhs rhs |> Result.Real
 
-            match context.lhs |> this.Visit, context.rhs |> this.Visit with
-            | Integer lhs, Integer rhs
-                -> Checked.(+) lhs rhs |> Result.Integer
-            | Integer lhs, Real rhs
-                -> realOp (double lhs) rhs
-            | Real lhs, Integer rhs
-                -> realOp lhs (double rhs)
-            | Real lhs, Real rhs
-                -> realOp lhs rhs
-            | String lhs, String rhs
-                -> lhs + rhs |> String
-            | Integer _, (String _ | Error)
-            | Real _, (String _ | Error)
-            | String _, (Integer _ | Real _ | Error)
-            | Error, (Integer _ | Real _ | String _ | Error)
-                -> Error
+            try
+                match context.lhs |> this.Visit, context.rhs |> this.Visit with
+                | Integer lhs, Integer rhs
+                    -> Checked.(+) lhs rhs |> Result.Integer
+                | Integer lhs, Real rhs
+                    -> realOp (double lhs) rhs
+                | Real lhs, Integer rhs
+                    -> realOp lhs (double rhs)
+                | Real lhs, Real rhs
+                    -> realOp lhs rhs
+                | String lhs, String rhs
+                    -> lhs + rhs |> String
+                | (Integer _ | Real _), String _
+                | String _, (Integer _ | Real _)
+                    -> this.DefaultResult
+                | Error err, (Integer _ | Real _ | String _ | Error _)
+                | (Integer _ | Real _ | String _), Error err
+                    -> err |> Error
+            with
+            | :? System.OverflowException -> OverFlow |> Error
 
         override this.VisitSubExpr([<NotNull>]context: ExpressionParser.SubExprContext) =
             let realOp lhs rhs = Checked.(-) lhs rhs |> Result.Real
 
-            match context.lhs |> this.Visit, context.rhs |> this.Visit with
-            | Integer lhs, Integer rhs
-                -> Checked.(-) lhs rhs |> Result.Integer
-            | Integer lhs, Real rhs
-                -> realOp (double lhs) rhs
-            | Real lhs, Integer rhs
-                -> realOp lhs (double rhs)
-            | Real lhs, Real rhs
-                -> realOp lhs rhs
-            | String lhs, String rhs
-                -> invalidOp "CantMinusString"
-            | Integer _, (String _ | Error)
-            | Real _, (String _ | Error)
-            | String _, (Integer _ | Real _ | Error)
-            | Error, (Integer _ | Real _ | String _ | Error)
-                -> Error
+            try
+                match context.lhs |> this.Visit, context.rhs |> this.Visit with
+                | Integer lhs, Integer rhs
+                    -> Checked.(-) lhs rhs |> Result.Integer
+                | Integer lhs, Real rhs
+                    -> realOp (double lhs) rhs
+                | Real lhs, Integer rhs
+                    -> realOp lhs (double rhs)
+                | Real lhs, Real rhs
+                    -> realOp lhs rhs
+                | String lhs, String rhs
+                    -> CantMinusString |> Error
+                | (Integer _ | Real _), String _
+                | String _, (Integer _ | Real _)
+                    -> this.DefaultResult
+                | Error err, (Integer _ | Real _ | String _ | Error _)
+                | (Integer _ | Real _ | String _), Error err
+                    -> err |> Error
+            with
+            | :? System.OverflowException -> OverFlow |> Error
 
         member private this.MultiExpr lhs rhs =
             let realOp lhs rhs = Checked.( * ) lhs rhs |> Result.Real
 
-            match lhs, rhs with
-            | Integer lhs, Integer rhs
-                -> Checked.( * ) lhs rhs |> Result.Integer
-            | Integer lhs, Real rhs
-                -> realOp (double lhs) rhs
-            | Real lhs, Integer rhs
-                -> realOp lhs (double rhs)
-            | Real lhs, Real rhs
-                -> realOp lhs rhs
-            | Integer times, String text
-            | String text, Integer times
-                -> List.fold (fun acc _ -> acc + text) "" [1 .. times] |> String
-            | Integer _, Error
-            | Real _, (String _ | Error)
-            | String _, (Real _ | String _ | Error)
-            | Error, (Integer _ | Real _ | String _ | Error)
-                -> Error
+            try
+                match lhs, rhs with
+                | Integer lhs, Integer rhs
+                    -> Checked.( * ) lhs rhs |> Result.Integer
+                | Integer lhs, Real rhs
+                    -> realOp (double lhs) rhs
+                | Real lhs, Integer rhs
+                    -> realOp lhs (double rhs)
+                | Real lhs, Real rhs
+                    -> realOp lhs rhs
+                | Integer times, String text
+                | String text, Integer times
+                    -> List.fold (fun acc _ -> acc + text) "" [1 .. times] |> String
+                | Real _, String _
+                | String _, (Real _ | String _)
+                    -> this.DefaultResult
+                | Error err, (Integer _ | Real _ | String _ | Error _)
+                | (Integer _ | Real _ | String _), Error err
+                    -> err |> Error
+            with
+            | :? System.OverflowException -> OverFlow |> Error
 
         override this.VisitMultiExpr([<NotNull>]context: ExpressionParser.MultiExprContext) =
             this.MultiExpr
@@ -86,8 +98,8 @@ type Visitor() =
             match context.lhs |> this.Visit, context.rhs |> this.Visit with
             | Integer lhs, Integer rhs
                 ->
-                if rhs = 0 then invalidOp "ZeroDiv"
-                elif lhs % rhs = 0 then lhs / rhs |> Result.Integer
+                if rhs = 0 then ZeroDiv |> Error
+                elif lhs % rhs = 0 then lhs / rhs |> Integer
                 else realOp (double lhs) (double rhs)
             | Integer lhs, Real rhs
                 -> realOp (double lhs) rhs
@@ -95,11 +107,12 @@ type Visitor() =
                 -> realOp lhs (double rhs)
             | Real lhs, Real rhs
                 -> realOp lhs rhs
-            | Integer _, (String _ | Error)
-            | Real _, (String _ | Error)
-            | String _, (Integer _ | Real _ | String _ | Error)
-            | Error, (Integer _ | Real _ | String _ | Error)
-                -> Error
+            | (Integer _ | Real _), String _
+            | String _, (Integer _ | Real _ | String _)
+                -> this.DefaultResult
+            | Error err, (Integer _ | Real _ | String _ | Error _)
+            | (Integer _ | Real _ | String _), Error err
+                -> err |> Error
 
         override this.VisitPowExpr([<NotNull>]context: ExpressionParser.PowExprContext) =
             let realOp lhs rhs = lhs ** rhs |> Result.Real
@@ -116,25 +129,26 @@ type Visitor() =
                 -> realOp lhs (double rhs)
             | Real lhs, Real rhs
                 -> realOp lhs rhs
-            | Integer _, (String _ | Error)
-            | Real _, (String _ | Error)
-            | String _, (Integer _ | Real _ | String _ | Error)
-            | Error, (Integer _ | Real _ | String _ | Error)
-                -> Error
+            | (Integer _ | Real _), String _
+            | String _, (Integer _ | Real _ | String _)
+                -> this.DefaultResult
+            | Error err, (Integer _ | Real _ | String _ | Error _)
+            | (Integer _ | Real _ | String _), Error err
+                -> err |> Error
 
         override this.VisitPlusExpr([<NotNull>]context: ExpressionParser.PlusExprContext) =
             match context.rhs |> this.Visit with
             | Integer value -> value |> Integer
             | Real value -> value |> Real
             | String _ -> invalidOp "CantUnaryPlusString"
-            | Error -> Error
+            | Error err -> err |> Error
 
         override this.VisitMinusExpr([<NotNull>]context: ExpressionParser.MinusExprContext) =
             match context.rhs |> this.Visit with
             | Integer value -> -value |> Integer
             | Real value -> -value |> Real
             | String _ -> invalidOp "CantUnaryMinusString"
-            | Error -> Error
+            | Error err -> err |> Error
 
         override this.VisitParenExpr([<NotNull>]context: ExpressionParser.ParenExprContext) =
             context.expr() |> this.Visit
@@ -148,23 +162,23 @@ type Visitor() =
                 -> match args.Length, List.tryHead args with
                    | 1, Some (Integer value) -> value |> double|> toRadian |> System.Math.Sin |> Real
                    | 1, Some (Real value) -> value |> toRadian |> System.Math.Sin |> Real
-                   | _, _ -> Error
+                   | _, _ -> this.DefaultResult
             | "COS"
                 -> match args.Length, List.tryHead args with
                    | 1, Some (Integer value) -> value |> double |> toRadian |> System.Math.Cos |> Real
                    | 1, Some (Real value) -> value |> toRadian |> System.Math.Cos |> Real
-                   | _, _ -> Error
+                   | _, _ -> this.DefaultResult
             | "TAN"
                 -> match args.Length, List.tryHead args with
                    | 1, Some (Integer value) -> value |> double |> toRadian |> System.Math.Tan |> Real
                    | 1, Some (Real value) -> value |> toRadian |> System.Math.Tan |> Real
-                   | _, _ -> Error
+                   | _, _ -> this.DefaultResult
             | "LEN"
                 -> match args.Length, List.tryHead args with
                    | 1, Some (String text) -> text.Length |> Integer
-                   | _, _ -> Error
+                   | _, _ -> this.DefaultResult
             | _
-                -> Error
+                -> this.DefaultResult
 
         override this.VisitUintLiteral([<NotNull>]context: ExpressionParser.UintLiteralContext) =
             context.UINT().Symbol.Text |> System.Int32.Parse |> Integer
@@ -179,4 +193,4 @@ type Visitor() =
         override this.VisitIdentifier([<NotNull>]context: ExpressionParser.IdentifierContext) =
             match context.IDENTIFIER().Symbol.Text.ToUpper() with
             | "PI" -> System.Math.PI |> Real
-            | _ -> Error
+            | _ -> this.DefaultResult
